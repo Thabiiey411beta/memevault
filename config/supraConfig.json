@@ -1,0 +1,35 @@
+{
+  "oracle": {
+    "address": "0x...",
+    "endpoint": "https://api.supra.com/oracle",
+    "tokens": ["SUPRA", "DOGE", "SHIB", "PEPE"]
+  },
+  "autoFi": {
+    "address": "0x...",
+    "endpoint": "https://api.supra.com/automation",
+    "tasks": [
+      {
+        "contract": "MEPLToken",
+        "function": "burnMonthly",
+        "interval": "30 days"
+      },
+      {
+        "contract": "AutoFiRebalancer",
+        "function": "rebalancePool",
+        "interval": "1 day"
+      }
+    ]
+  },
+  "dVRF": {
+    "address": "0x...",
+    "endpoint": "https://api.supra.com/dvrf"
+  },
+  "supraNova": {
+    "address": "0x...",
+    "chains": ["Ethereum", "BinanceSmartChain"]
+  },
+  "aiAgent": {
+    "address": "0x...",
+    "endpoint": "https://api.supra.com/ai-agent"
+  }
+}

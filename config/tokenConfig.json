@@ -1,0 +1,13 @@
+{
+  "supraToken": "0x...",
+  "memecoins": [
+    "0x...DOGE",
+    "0x...SHIB",
+    "0x...PEPE"
+  ],
+  "meplToken": "0x...",
+  "stMEME": "0x...",
+  "memeIndex": "0x...",
+  "adminAddress": "0xa2525317402889d48AF009E1ae4E5a8baAa6e11c",
+  "testAddress": "0x9516494976a6de49218b86c96cceac7eb0366de6610d068e861b3636beec1915"
+}

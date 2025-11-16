@@ -1,0 +1,10 @@
+body {
+  font-family: Arial, sans-serif;
+}
+.card {
+  max-width: 500px;
+  margin: 20px auto;
+}
+.navbar {
+  margin-bottom: 20px;
+}
