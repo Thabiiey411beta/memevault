@@ -1,0 +1,366 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <meta name="description" content="MemeVault: The Future of Meme DeFi on Supra. Stake, Burn, Earn, Level Up. Powered by AI, Gamification & HyperNova Yields."/>
+  <title>MemeVault | The Future of Meme DeFi</title>
+
+  <!-- Tailwind + DaisyUI + Flowbite -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://cdn.jsdelivr.net/npm/daisyui@4.7.2/dist/full.min.css" rel="stylesheet" type="text/css" />
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/flowbite/2.3.0/flowbite.min.js"></script>
+
+  <!-- Three.js + GSAP + Particles + Lottie -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/gsap@3.12.2/dist/gsap.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/gsap@3.12.2/dist/ScrollTrigger.min.js"></script>
+  <script src="https://unpkg.com/@lottiefiles/lottie-player@latest/dist/lottie-player.js"></script>
+
+  <!-- Google Fonts -->
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@700;900&family=Inter:wght@400;600;800&display=swap" rel="stylesheet">
+
+  <style>
+    :root {
+      --neon-yellow: #F9FF00;
+      --neon-pink: #FF00B8;
+      --neon-purple: #9D00FF;
+      --neon-cyan: #00FFFF;
+      --dark-void: #0A0A0A;
+      --glass: rgba(30, 30, 50, 0.15);
+    }
+    body { 
+      background: var(--dark-void); 
+      color: white; 
+      font-family: 'Inter', sans-serif;
+      overflow-x: hidden;
+    }
+    .orbitron { font-family: 'Orbitron', sans-serif; }
+    .gradient-text { 
+      background: linear-gradient(90deg, var(--neon-yellow), var(--neon-pink), var(--neon-purple), var(--neon-cyan));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-size: 300%;
+      animation: gradientShift 8s ease infinite;
+    }
+    @keyframes gradientShift { 0%,100% { background-position: 0% 50%; } 50% { background-position: 100% 50%; } }
+    .glass { backdrop-filter: blur(16px); background: var(--glass); border: 1px solid rgba(255,255,255,0.1); }
+    .neon-glow { box-shadow: 0 0 20px var(--neon-yellow), 0 0 40px var(--neon-pink); }
+    .particle { position: absolute; font-size: 1.5rem; pointer-events: none; opacity: 0.8; }
+    .hologram { 
+      background: linear-gradient(45deg, transparent 30%, rgba(255,255,255,0.1) 50%, transparent 70%);
+      background-size: 200% 200%;
+      animation: hologram 3s linear infinite;
+    }
+    @keyframes hologram { 0% { background-position: 0% 0%; } 100% { background-position: 200% 200%; } }
+    #three-canvas { position: fixed; top: 0; left: 0; z-index: -1; }
+    .level-badge { 
+      background: linear-gradient(45deg, #FFD700, #FF69B4);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      font-weight: 900;
+    }
+  </style>
+</head>
+<body class="min-h-screen">
+
+  <!-- 3D Background Canvas -->
+  <canvas id="three-canvas"></canvas>
+
+  <!-- Floating Particles -->
+  <div id="particles"></div>
+
+  <!-- Hero: Quantum Portal -->
+  <section class="relative min-h-screen flex items-center justify-center px-6 overflow-hidden">
+    <div class="absolute inset-0 bg-gradient-to-br from-purple-900/20 via-pink-900/20 to-cyan-900/20 blur-3xl"></div>
+    <div class="relative z-10 text-center max-w-6xl mx-auto">
+      <h1 class="text-7xl md:text-9xl orbitron font-black tracking-tighter gradient-text animate-pulse">
+        MEMEVAULT
+      </h1>
+      <p class="text-2xl md:text-4xl mt-6 font-light opacity-90">
+        Stake <span class="font-bold text-yellow-400">DOGE</span> • <span class="font-bold text-red-500">SHIB</span> • <span class="font-bold text-green-400">PEPE</span> + <span class="text-cyan-400">$SUPRA</span>
+      </p>
+      <p class="text-xl mt-4 opacity-80">→ Earn <span class="font-bold text-pink-400">$MEPL</span> • 12% Monthly Burn • AI-Optimized Yields</p>
+
+      <div class="flex flex-col sm:flex-row gap-6 justify-center mt-12">
+        <button onclick="connectWallet()" class="px-10 py-5 bg-gradient-to-r from-cyan-500 to-purple-600 rounded-full font-bold text-xl shadow-2xl hover:scale-110 transition transform neon-glow">
+          Connect StarKey
+        </button>
+        <button onclick="toggleTheme()" id="themeBtn" class="px-8 py-5 glass rounded-full text-xl border border-cyan-400 hover:bg-cyan-400/20 transition">
+          Dark Mode
+        </button>
+      </div>
+
+      <div class="mt-16 flex justify-center gap-8 text-sm opacity-70">
+        <div>@Newton_crypt</div>
+        <div>Supra Blockchain</div>
+        <div>ZA</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Live Burn + TVL Rocket -->
+  <section class="py-24 px-6">
+    <div class="max-w-6xl mx-auto grid md:grid-cols-2 gap-12">
+      <!-- Burn Tracker -->
+      <div class="glass rounded-3xl p-8 neon-glow">
+        <h2 class="text-5xl orbitron mb-8 gradient-text">HyperBurn Engine</h2>
+        <div class="grid grid-cols-3 gap-6 text-center mb-8">
+          <div class="glass rounded-2xl p-6">
+            <div id="days" class="text-6xl font-black text-yellow-400">30</div>
+            <p class="text-sm uppercase mt-2">Days</p>
+          </div>
+          <div class="glass rounded-2xl p-6">
+            <div id="hours" class="text-6xl font-black text-pink-400">05</div>
+            <p class="text-sm uppercase mt-2">Hours</p>
+          </div>
+          <div class="glass rounded-2xl p-6">
+            <div id="mins" class="text-6xl font-black text-purple-400">47</div>
+            <p class="text-sm uppercase mt-2">Mins</p>
+          </div>
+        </div>
+        <div class="relative h-10 bg-gray-900 rounded-full overflow-hidden">
+          <div id="burnProgress" class="h-full bg-gradient-to-r from-yellow-400 via-pink-500 to-purple-600 rounded-full" style="width: 81.05%"></div>
+          <div class="absolute inset-0 flex items-center justify-center text-sm font-bold">81.05% Burned</div>
+        </div>
+        <p class="mt-4 text-center text-sm opacity-80">→ 95.2% in 24 months</p>
+      </div>
+
+      <!-- TVL Rocket -->
+      <div class="glass rounded-3xl p-8 neon-glow flex flex-col items-center justify-center">
+        <h2 class="text-5xl orbitron mb-6 gradient-text">TVL Rocket</h2>
+        <div class="relative h-64 w-full flex items-end justify-center">
+          <div id="rocket" class="text-9xl animate-bounce">Rocket</div>
+        </div>
+        <div class="mt-6 text-center">
+          <span class="text-4xl font-black text-cyan-400">$<span id="tvlNum">1.42</span>M</span>
+          <p class="text-sm opacity-70">Total Value Locked</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Tokenomics: Interactive 3D Pie -->
+  <section class="py-24 px-6 bg-black/40">
+    <div class="max-w-6xl mx-auto">
+      <h2 class="text-6xl orbitron text-center mb-16 gradient-text">Tokenomics</h2>
+      <div class="grid md:grid-cols-2 gap-12 items-center">
+        <div id="tokenomics-3d" class="h-96"></div>
+        <div class="space-y-6 text-lg">
+          <div class="flex items-center gap-4"><div class="w-6 h-6 bg-yellow-400 rounded-full"></div> 40% Liquidity & Airdrops</div>
+          <div class="flex items-center gap-4"><div class="w-6 h-6 bg-pink-500 rounded-full"></div> 30% Treasury (Locked 5y)</div>
+          <div class="flex items-center gap-4"><div class="w-6 h-6 bg-purple-600 rounded-full"></div> 20% Team (3yr Vest)</div>
+          <div class="flex items-center gap-4"><div class="w-6 h-6 bg-cyan-400 rounded-full"></div> 10% Community Rewards</div>
+          <div class="mt-8 p-4 glass rounded-xl">
+            <p class="text-sm opacity-70">Total Supply: <span class="font-bold text-yellow-400">2,000,000,000 $MEPL</span></p>
+            <p class="text-sm opacity-70">Circulating: <span class="font-bold text-pink-400">380M</span> (81% burned)</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Roadmap: Holographic Timeline -->
+  <section class="py-24 px-6">
+    <h2 class="text-6xl orbitron text-center mb-16 gradient-text">Roadmap to Meme Singularity</h2>
+    <div class="max-w-5xl mx-auto relative">
+      <div class="absolute top-1/2 left-0 right-0 h-1 bg-gradient-to-r from-cyan-500 via-purple-500 to-pink-500 transform -translate-y-1/2"></div>
+      <div class="grid md:grid-cols-4 gap-8 relative z-10">
+        {[
+          { q: "Q4 2025", title: "Quantum Launch", desc: "Mainnet + Airdrop", icon: "Launch", done: true },
+          { q: "Q1 2026", title: "AutoFi AI", desc: "HyperNova Yield Engine", icon: "AI", done: false },
+          { q: "Q2 2026", title: "Cross-Chain", desc: "L2 Bridges + zkML", icon: "Bridge", done: false },
+          { q: "Q4 2026", title: "Burn Complete", desc: "47.5M Supply", icon: "Fire", done: false },
+        ].map(m => `
+          <div class="text-center group">
+            <div class="glass w-20 h-20 rounded-full mx-auto flex items-center justify-center text-4xl mb-4 ${m.done ? 'bg-gradient-to-r from-cyan-500 to-purple-500' : 'bg-gray-800'} transition-all group-hover:scale-110">
+              ${m.icon}
+            </div>
+            <p class="font-bold text-yellow-400">${m.q}</p>
+            <p class="text-lg font-semibold">${m.title}</p>
+            <p class="text-sm opacity-70">${m.desc}</p>
+          </div>
+        `).join('')}
+      </div>
+    </div>
+  </section>
+
+  <!-- Ultimate Goal: Vision Statement -->
+  <section class="py-24 px-6 bg-gradient-to-b from-transparent to-purple-900/20">
+    <div class="max-w-4xl mx-auto text-center">
+      <h2 class="text-6xl orbitron mb-12 gradient-text">Ultimate Goal</h2>
+      <div class="glass rounded-3xl p-12 neon-glow">
+        <p class="text-2xl leading-relaxed">
+          To become the <span class="font-bold text-cyan-400">first AI-governed meme index</span> that autonomously captures 
+          <span class="text-yellow-400">100% of meme market alpha</span> across chains, 
+          burns supply to <span class="text-pink-400">47.5M</span>, and rewards holders with 
+          <span class="text-green-400">sustainable 40%+ APY</span> — forever.
+        </p>
+        <div class="mt-8 flex justify-center gap-8 text-sm">
+          <div>AI Yield Optimization</div>
+          <div>Gamified Staking</div>
+          <div>Deflationary Burn</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Gamified Feature: Level System + Missions -->
+  <section class="py-24 px-6">
+    <div class="max-w-6xl mx-auto">
+      <h2 class="text-6xl orbitron text-center mb-16 gradient-text">Vault Level System</h2>
+      
+      <!-- User Level Card -->
+      <div class="glass rounded-3xl p-8 mb-12 flex items-center justify-between flex-wrap gap-6">
+        <div class="flex items-center gap-6">
+          <div class="w-24 h-24 bg-gradient-to-br from-yellow-400 to-pink-500 rounded-full flex items-center justify-center text-4xl font-bold">Pepe</div>
+          <div>
+            <p class="text-sm opacity-70">Your Rank</p>
+            <p class="text-3xl font-bold level-badge">Level 7 — Meme Lord</p>
+            <div class="w-64 h-4 bg-gray-800 rounded-full mt-2 overflow-hidden">
+              <div class="h-full bg-gradient-to-r from-yellow-400 to-pink-500 rounded-full" style="width: 78%"></div>
+            </div>
+          </div>
+        </div>
+        <div class="text-right">
+          <p class="text-sm opacity-70">Next Reward</p>
+          <p class="text-2xl font-bold text-cyan-400">500 $MEPL + NFT</p>
+        </div>
+      </div>
+
+      <!-- Missions Grid -->
+      <div class="grid md:grid-cols-3 gap-6">
+        {[
+          { title: "Stake $10K for 90d", reward: "200 $MEPL + Badge", icon: "Vault", progress: 65 },
+          { title: "Refer 10 Frens", reward: "100 $MEPL each", icon: "Users", progress: 40 },
+          { title: "Hold 50K stMEME", reward: "2x APY Boost", icon: "Star", progress: 88 },
+        ].map(m => `
+          <div class="glass rounded-2xl p-6 hover:scale-105 transition transform">
+            <div class="text-5xl mb-4 text-center">${m.icon}</div>
+            <h3 class="text-xl font-bold mb-2">${m.title}</h3>
+            <p class="text-sm text-cyan-400 mb-4">${m.reward}</p>
+            <div class="h-2 bg-gray-800 rounded-full overflow-hidden">
+              <div class="h-full bg-gradient-to-r from-cyan-500 to-purple-500 rounded-full" style="width: ${m.progress}%"></div>
+            </div>
+            <p class="text-xs mt-2 text-right">${m.progress}% Complete</p>
+          </div>
+        `).join('')}
+      </div>
+    </div>
+  </section>
+
+  <!-- CTA -->
+  <section class="py-24 text-center">
+    <h2 class="text-6xl orbitron mb-8 gradient-text">Enter the Vault</h2>
+    <a href="#" class="inline-block px-16 py-6 bg-gradient-to-r from-cyan-400 via-purple-500 to-pink-500 rounded-full text-black font-bold text-2xl shadow-2xl hover:scale-110 transition transform neon-glow">
+      Launch DApp
+    </a>
+    <p class="mt-8 text-sm opacity-70">@Newton_crypt • Supra • ZA • 2025</p>
+  </section>
+
+  <!-- Scripts -->
+  <script>
+    // Theme
+    let isDark = true;
+    function toggleTheme() {
+      isDark = !isDark;
+      document.body.style.background = isDark ? 'var(--dark-void)' : '#f0f4ff';
+    }
+
+    // Wallet
+    function connectWallet() {
+      alert('StarKey Connected!\n0x71C7...a1F2');
+    }
+
+    // Burn Countdown
+    function updateCountdown() {
+      const target = new Date('2025-12-16T00:00:00');
+      const now = new Date();
+      const diff = target - now;
+      if (diff > 0) {
+        const days = Math.floor(diff / (1000*60*60*24));
+        const hours = Math.floor((diff % (1000*60*60*24)) / (1000*60*60));
+        const mins = Math.floor((diff % (1000*60*60)) / (1000*60));
+        document.getElementById('days').textContent = days;
+        document.getElementById('hours').textContent = String(hours).padStart(2,'0');
+        document.getElementById('mins').textContent = String(mins).padStart(2,'0');
+      }
+    }
+    setInterval(updateCountdown, 60000); updateCountdown();
+
+    // TVL Rocket
+    let tvl = 1.42;
+    function updateTVL() {
+      tvl += Math.random() * 0.05;
+      document.getElementById('tvlNum').textContent = tvl.toFixed(2);
+      const height = Math.min(tvl * 50, 200);
+      document.getElementById('rocket').style.transform = `translateY(-${height}px)`;
+    }
+    setInterval(updateTVL, 3000);
+
+    // 3D Tokenomics
+    const tokenScene = new THREE.Scene();
+    const tokenCamera = new THREE.PerspectiveCamera(75, 1, 0.1, 1000);
+    const tokenRenderer = new THREE.WebGLRenderer({ canvas: document.getElementById('tokenomics-3d'), alpha: true });
+    tokenRenderer.setSize(400, 400);
+    const geometry = new THREE.TorusKnotGeometry(1, 0.3, 128, 16);
+    const material = new THREE.MeshBasicMaterial({ color: 0x9D00FF, wireframe: true });
+    const knot = new THREE.Mesh(geometry, material);
+    tokenScene.add(knot);
+    tokenCamera.position.z = 3;
+    function animateKnot() {
+      requestAnimationFrame(animateKnot);
+      knot.rotation.x += 0.01;
+      knot.rotation.y += 0.01;
+      tokenRenderer.render(tokenScene, tokenCamera);
+    }
+    animateKnot();
+
+    // Particles
+    const emojis = ['Pepe','Shiba','Doge','Rocket','Fire','Gem','Star','Crown','Vault','AI'];
+    for (let i = 0; i < 40; i++) {
+      const p = document.createElement('div');
+      p.className = 'particle';
+      p.textContent = emojis[Math.floor(Math.random() * emojis.length)];
+      p.style.left = Math.random() * 100 + 'vw';
+      p.style.top = Math.random() * 100 + 'vh';
+      p.style.animation = `float ${5 + Math.random() * 10}s ease-in-out infinite`;
+      p.style.animationDelay = Math.random() * 5 + 's';
+      document.getElementById('particles').appendChild(p);
+    }
+
+    // 3D Background
+    const scene = new THREE.Scene();
+    const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
+    const renderer = new THREE.WebGLRenderer({ canvas: document.getElementById('three-canvas'), alpha: true });
+    renderer.setSize(window.innerWidth, window.innerHeight);
+    const particlesGeometry = new THREE.BufferGeometry();
+    const particlesCnt = 5000;
+    const posArray = new Float32Array(particlesCnt * 3);
+    for(let i = 0; i < particlesCnt * 3; i++) {
+      posArray[i] = (Math.random() - 0.5) * 10;
+    }
+    particlesGeometry.setAttribute('position', new THREE.BufferAttribute(posArray, 3));
+    const particlesMaterial = new THREE.PointsMaterial({
+      size: 0.005,
+      color: 0x9D00FF,
+      transparent: true,
+      opacity: 0.8
+    });
+    const particlesMesh = new THREE.Points(particlesGeometry, particlesMaterial);
+    scene.add(particlesMesh);
+    camera.position.z = 3;
+    function animate() {
+      requestAnimationFrame(animate);
+      particlesMesh.rotation.y += 0.0005;
+      renderer.render(scene, camera);
+    }
+    animate();
+    window.addEventListener('resize', () => {
+      camera.aspect = window.innerWidth / window.innerHeight;
+      camera.updateProjectionMatrix();
+      renderer.setSize(window.innerWidth, window.innerHeight);
+    });
+  </script>
+</body>
+</html>
